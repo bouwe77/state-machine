@@ -22,3 +22,35 @@ export function createMachine(stateMachineDefinition) {
   }
   return machine
 }
+
+export function interpret(machine) {
+  let stopped = true;
+  let finalState = null;
+
+  const service = {
+    start: () => {
+      stopped = false;
+    },
+    stop: () => {
+      stopped = true;
+      finalState = machine.value;
+    },
+    send: ({ type: event }) => {
+      if (!stopped) {
+        machine.transition(machine.value, event);
+      }
+    },
+    get state() {
+      return stopped ? finalState : machine.value;
+    }
+  };
+
+  return {
+    ...service,
+    get state() {
+      return stopped ? machine.initialState : service.state;
+    }
+  };
+}
+
+

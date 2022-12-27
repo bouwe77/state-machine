@@ -1,4 +1,3 @@
-import { createMachine } from './createMachine.js'
 
 const lightSwitchMachine = {
   initialState: 'off',
@@ -12,10 +11,10 @@ const lightSwitchMachine = {
       },
     },
     transitions: {
-      switch: {
+      SWITCH: {
         target: 'on',
         action() {
-          // console.log('transition action for "switch" in "off" state')
+          // console.log('transition action for "SWITCH" in "off" state')
         },
       },
     },
@@ -30,10 +29,10 @@ const lightSwitchMachine = {
       },
     },
     transitions: {
-      switch: {
+      SWITCH: {
         target: 'off',
         action() {
-          // console.log('transition action for "switch" in "on" state')
+          // console.log('transition action for "SWITCH" in "on" state')
         },
       },
     },

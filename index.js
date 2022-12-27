@@ -1,14 +1,28 @@
-import { createMachine } from './createMachine.js'
+import { createMachine, interpret } from './lib.js'
 import lightSwitchMachine from './lightSwitchMachine.js'
 
 const light1 = createMachine(lightSwitchMachine)
+const service = interpret(light1)
 
-let state = light1.value
-console.assert(state === 'off', 'light1 is off')
-state = light1.transition(state, 'switch')
-console.assert(state === 'on', 'light1 is on')
-state = light1.transition(state, 'switch')
-console.assert(state === 'off', 'light1 is off')
+console.assert(service.state === 'off', 'Should be OFF')
+console.log(service.state)
 
-console.log('✅')
+// service.start();
+// console.assert(service.state === 'off', 'Should be OFF')
+
+// service.send({ type: 'SWITCH' });
+// service.send({ type: 'SWITCH' });
+// service.send({ type: 'SWITCH' });
+// console.assert(service.state === 'on', 'Should be ON')
+
+// service.send({ type: 'SWITCH' });
+// console.assert(service.state === 'off', 'Should be OFF')
+
+// service.send({ type: 'SWITCH' });
+// console.assert(service.state === 'on', 'Should be ON')
+
+// service.stop();
+// console.log(service.state)
+// console.assert(service.state === 'on', 'Should be ON')
+
 
