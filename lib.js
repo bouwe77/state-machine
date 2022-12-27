@@ -1,5 +1,6 @@
 export function createMachine(stateMachineDefinition) {
   const machine = {
+    initialState: stateMachineDefinition.initialState,
     value: stateMachineDefinition.initialState,
     transition(currentState, event) {
       const currentStateDefinition = stateMachineDefinition[currentState]
@@ -11,15 +12,15 @@ export function createMachine(stateMachineDefinition) {
       const destinationStateDefinition =
         stateMachineDefinition[destinationState]
 
+      machine.value = destinationState
       destinationTransition.action()
       currentStateDefinition.actions.onExit()
       destinationStateDefinition.actions.onEnter()
 
-      machine.value = destinationState
-
       return machine.value
     },
   }
+
   return machine
 }
 
@@ -51,6 +52,7 @@ export function interpret(machine) {
       return stopped ? machine.initialState : service.state;
     }
   };
+
 }
 
 
