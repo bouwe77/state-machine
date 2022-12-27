@@ -25,34 +25,26 @@ export function createMachine(stateMachineDefinition) {
 }
 
 export function interpret(machine) {
-  let stopped = true;
-  let finalState = null;
+  let started = false
 
   const service = {
     start: () => {
-      stopped = false;
+      started = true
     },
     stop: () => {
-      stopped = true;
-      finalState = machine.value;
+      started = false
     },
     send: ({ type: event }) => {
-      if (!stopped) {
+      if (started) {
         machine.transition(machine.value, event);
       }
     },
     get state() {
-      return stopped ? finalState : machine.value;
+      return machine.value;
     }
   };
 
-  return {
-    ...service,
-    get state() {
-      return stopped ? machine.initialState : service.state;
-    }
-  };
-
+  return service
 }
 
 

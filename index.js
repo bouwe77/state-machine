@@ -20,9 +20,7 @@ console.assert(service.state === 'off', 'Should be OFF')
 service.send({ type: 'SWITCH' });
 console.assert(service.state === 'on', 'Should be ON')
 
-console.log(service.state)
 service.stop();
-console.log(service.state)
 console.assert(service.state === 'on', 'Should be ON')
 
 
