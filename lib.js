@@ -11,16 +11,29 @@ export function createMachine(stateMachineDefinition) {
     // The function updates the state of the machine, and returns that state.
     transition(currentState, event) {
       const currentStateDefinition = stateMachineDefinition[currentState]
-      const destinationTransition = currentStateDefinition.transitions[event]
-
+      
+      const destinationTransition = currentStateDefinition.on[event]
       if (!destinationTransition) return
 
       const destinationState = destinationTransition.target
+      if (!destinationState) return
+      
       const destinationStateDefinition = stateMachineDefinition[destinationState]
 
-      destinationTransition.actions()
-      currentStateDefinition.onExit()
-      destinationStateDefinition.onEnter()
+      console.log(destinationTransition.actions)
+      console.log([destinationTransition.actions].flat())
+        
+      //if (destinationTransition.actions) 
+        [destinationTransition.actions].flat().forEach(fn => fn()) 
+        // else console.log('yo?')
+
+      // if (currentStateDefinition.onExit) 
+        [currentStateDefinition.onExit].flat().forEach(fn => fn()) 
+        // else console.log('yo?')
+
+      // if (destinationStateDefinition.onEnter) 
+      [destinationStateDefinition.onEnter].flat().forEach(fn => fn()) 
+      //  else console.log('yo?')
 
       machine.value = destinationState
 
