@@ -1,7 +1,6 @@
 //TODO:
 // - Send data along with event
-// - actions can be a single function or an array of functions
-//
+// - Context
 //
 //
 
