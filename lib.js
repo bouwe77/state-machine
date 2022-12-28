@@ -10,57 +10,54 @@ export function createMachine(stateMachineDefinition) {
     // state to transition from, and an event to describe the transistion.
     // The function updates the state of the machine, and returns that state.
     transition(currentState, event) {
-      const currentStateDefinition = stateMachineDefinition[currentState]
-      
-      const destinationTransition = currentStateDefinition.on[event]
-      if (!destinationTransition) return
+      const currentStateDefinition = stateMachineDefinition[currentState];
+      if (!currentStateDefinition) return;
 
-      const destinationState = destinationTransition.target
-      if (!destinationState) return
-      
-      const destinationStateDefinition = stateMachineDefinition[destinationState]
+      const destinationTransition = currentStateDefinition.on[event];
+      if (!destinationTransition) return;
 
-      console.log(destinationTransition.actions)
-      console.log([destinationTransition.actions].flat())
-        
-      //if (destinationTransition.actions) 
-        [destinationTransition.actions].flat().forEach(fn => fn()) 
-        // else console.log('yo?')
+      const destinationState = destinationTransition.target;
+      if (!destinationState) return;
 
-      // if (currentStateDefinition.onExit) 
-        [currentStateDefinition.onExit].flat().forEach(fn => fn()) 
-        // else console.log('yo?')
+      const destinationStateDefinition =
+        stateMachineDefinition[destinationState];
+      if (!destinationStateDefinition) return;
 
-      // if (destinationStateDefinition.onEnter) 
-      [destinationStateDefinition.onEnter].flat().forEach(fn => fn()) 
-      //  else console.log('yo?')
+      callActions(destinationTransition.actions);
+      callActions(currentStateDefinition.onExit);
+      callActions(destinationStateDefinition.onEnter);
 
-      machine.value = destinationState
+      machine.value = destinationState;
 
-      return machine.value
+      return machine.value;
     },
-  }
+  };
 
-  return machine
+  return machine;
 }
+
+const callActions = (actions) => {
+  if (!actions) return;
+  [actions].flat().forEach((action) => action());
+};
 
 // Interpreting a (created) machine means creating an instance of a machine,
 // so we can keep track of the current state, and persist it in memory.
 // After the interpreted machine is started, it also allows for sending events to
 // it, so state transitions can be performed.
 export function interpret(machine) {
-  let started = false
+  let started = false;
 
   const service = {
-    start: () => started = true,
-    stop: () => started = false,
+    start: () => (started = true),
+    stop: () => (started = false),
     send: ({ type: event }) => {
       if (started) machine.transition(machine.value, event);
     },
     get state() {
       return machine.value;
-    }
+    },
   };
 
-  return service
+  return service;
 }
