@@ -1,11 +1,17 @@
 //TODO:
-// - Send data along with event
 // - Context
 //
 //
 
 import { createMachine, interpret } from './lib.js'
 import lightSwitchMachine from './lightSwitchMachine.js'
+import greetingMachine from './greetingMachine.js'
+
+const greeter = createMachine(greetingMachine)
+const greetingService = interpret(greeter)
+greetingService.start()
+
+greetingService.send({type: 'GREET', payload: { name: 'world'}})
 
 const light1 = createMachine(lightSwitchMachine)
 const service = interpret(light1)

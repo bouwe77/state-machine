@@ -9,23 +9,20 @@ export function createMachine(stateMachineDefinition) {
     // Pure function for transitioning the machine's state, ny giving a
     // state to transition from, and an event to describe the transistion.
     // The function updates the state of the machine, and returns that state.
-    transition(currentState, event) {
+    transition(currentState, event, payload) {
       const currentStateDefinition = stateMachineDefinition[currentState];
       if (!currentStateDefinition) return;
 
       const destinationTransition = currentStateDefinition.on[event];
-      if (!destinationTransition) return;
 
       const destinationState = destinationTransition.target;
-      if (!destinationState) return;
 
       const destinationStateDefinition =
         stateMachineDefinition[destinationState];
-      if (!destinationStateDefinition) return;
 
-      callActions(destinationTransition.actions);
-      callActions(currentStateDefinition.onExit);
-      callActions(destinationStateDefinition.onEnter);
+      if (destinationTransition) callActions(destinationTransition.actions, payload);
+      callActions(currentStateDefinition.onExit, payload);
+      if (destinationStateDefinition) callActions(destinationStateDefinition.onEnter, payload);
 
       machine.value = destinationState;
 
@@ -36,9 +33,9 @@ export function createMachine(stateMachineDefinition) {
   return machine;
 }
 
-const callActions = (actions) => {
+const callActions = (actions, payload) => {
   if (!actions) return;
-  [actions].flat().forEach((action) => action());
+  [actions].flat().forEach((action) => action(payload));
 };
 
 // Interpreting a (created) machine means creating an instance of a machine,
@@ -51,8 +48,8 @@ export function interpret(machine) {
   const service = {
     start: () => (started = true),
     stop: () => (started = false),
-    send: ({ type: event }) => {
-      if (started) machine.transition(machine.value, event);
+    send: ({ type: event, payload }) => {
+      if (started) machine.transition(machine.value, event, payload);
     },
     get state() {
       return machine.value;
