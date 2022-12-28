@@ -1,3 +1,10 @@
+//TODO:
+// - Send data along with event
+// - actions can be a single function or an array of functions
+//
+//
+//
+
 import { createMachine, interpret } from './lib.js'
 import lightSwitchMachine from './lightSwitchMachine.js'
 
