@@ -30,4 +30,6 @@ console.assert(service.state === 'on', 'Should be ON')
 service.stop();
 console.assert(service.state === 'on', 'Should be ON')
 
+console.log('DONE ✅')
+
 

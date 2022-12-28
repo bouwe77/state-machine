@@ -18,9 +18,9 @@ export function createMachine(stateMachineDefinition) {
       const destinationState = destinationTransition.target
       const destinationStateDefinition = stateMachineDefinition[destinationState]
 
-      destinationTransition.action()
-      currentStateDefinition.actions.onExit()
-      destinationStateDefinition.actions.onEnter()
+      destinationTransition.actions()
+      currentStateDefinition.onExit()
+      destinationStateDefinition.onEnter()
 
       machine.value = destinationState
 
